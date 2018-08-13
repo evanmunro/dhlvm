@@ -45,6 +45,18 @@ long double ldmultinom_cpp(NumericVector x,NumericVector prob) {
   return logp_sum; 
 }
 
+//array3D testing
+// [[Rcpp::export]]
+NumericVector testArray3D() { 
+  Array3d newArray(2,2,3); 
+  NumericMatrix newMat(1,2); 
+  for (int i = 0 ; i < 3; i ++) {
+    newArray.setMatrix(1,newMat); 
+  }
+  NumericMatrix result = newArray.getMatrix(1); 
+  return(result); 
+}
+
 // This function is adapted from http://www.mjdenny.com/blog.html
 // Takes a single sample from a dirichlet distribution 
 // [[Rcpp::export]]
@@ -64,11 +76,6 @@ NumericVector rdirichlet_cpp(NumericVector alpha_m) {
       distribution(j) = distribution(j)/sum_term;
     }
   return(distribution);
-}
-
-// [[Rcpp::export]]
-NumericVector timesTwo(NumericVector x) {
-  return x * 2;
 }
 
 // [[Rcpp::export]]
@@ -126,7 +133,7 @@ NumericMatrix sampleTransition_cpp(NumericVector S,NumericMatrix alpha) {
   }
   
   for (int k=0; k<K; k++) {
-    P(_,k) = rdirichlet_cpp(alpha+N(_,k)); 
+    P(_,k) = rdirichlet_cpp(alpha(_,k)+N(_,k)); 
   }
   return P; 
 }
@@ -134,6 +141,7 @@ NumericMatrix sampleTransition_cpp(NumericVector S,NumericMatrix alpha) {
 // [[Rcpp::export]]
 NumericMatrix sampleBeta_cpp(NumericMatrix data,NumericVector S,
                              NumericMatrix eta) {
+
   int Time = data.nrow(); 
   int K = eta.nrow(); 
   int V = eta.ncol(); 
@@ -148,10 +156,12 @@ NumericMatrix sampleBeta_cpp(NumericMatrix data,NumericVector S,
   return beta; 
 }
 
-//Run gibbs sampler for markov switching model
-//Eventually should port this to its own class 
-
-List discreteMS(NumericMatrix data,NumericMatrix eta,
+/**
+ * Run gibbs sampler for markov switching model 
+ * TODO: Port to own class 
+ */
+// [[Rcpp::export]]
+List discreteMS_cpp(NumericMatrix data,NumericMatrix eta,
                 NumericMatrix alpha,int K,int steps, int burn, int thin) {
   
   int T = data.nrow(); 
@@ -168,23 +178,25 @@ List discreteMS(NumericMatrix data,NumericMatrix eta,
     initBeta(k,_) = rdirichlet_cpp(eta(k,_)); 
     initP(_,k) = rdirichlet_cpp(alpha(_,k)); 
   }
-  beta_samp.setMatrix(1,initBeta); 
-  P_samp.setMatrix(1,initP); 
+  beta_samp.setMatrix(0,initBeta); 
+  P_samp.setMatrix(0,initP); 
   NumericMatrix initS(K,T); 
   NumericVector randomProb(K,0.5); 
+  
+  // TODO: make sampling a function or find existing function 
   for (int t=0; t<T; t++) {
     NumericVector mult_sample = as<NumericVector>(callRMultinom(randomProb)); 
     initS[t] = whichNonZero(mult_sample); 
   }
-  S_samp.setMatrix(1,initS); 
+  S_samp.setMatrix(0,initS); 
         
  // run gibbs sampler
   for (int s=1; s< steps; s++) {
-    NumericMatrix newS = sampleState_cpp(data,P_samp.getMatrix(s-1),
-                        S_samp.getMatrixRow(1,s-1),beta_samp.getMatrix(s-1)); 
-    S_samp.setMatrix(s,newS); 
-    P_samp.setMatrix(s,sampleTransition_cpp(S_samp.getMatrixRow(1,s-1),alpha)); 
-    beta_samp.setMatrix(s,sampleBeta_cpp(data,S_samp.getMatrixRow(1,s-1),eta)); 
+     NumericMatrix newS = sampleState_cpp(data,P_samp.getMatrix(s-1),
+                          S_samp.getMatrixRow(0,s-1),beta_samp.getMatrix(s-1)); 
+      S_samp.setMatrix(s,newS); 
+      P_samp.setMatrix(s,sampleTransition_cpp(S_samp.getMatrixRow(0,s),alpha)); //THIS IS FINE
+      beta_samp.setMatrix(s,sampleBeta_cpp(data,S_samp.getMatrixRow(0,s),eta)); 
   }
   List posteriors; 
   posteriors["S"] = S_samp.getVector(); 
@@ -194,11 +206,3 @@ List discreteMS(NumericMatrix data,NumericMatrix eta,
 }
 
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
-
-/*** R
-timesTwo(42)
-*/

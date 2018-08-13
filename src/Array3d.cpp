@@ -5,7 +5,8 @@ Array3d::Array3d(int row, int col, int slice) {
   nrow = row; 
   ncol = col; 
   nslice = slice; 
-  data(nrow*ncol*nslice); 
+  NumericVector vec(nrow*ncol*nslice); 
+  data = vec; 
 }
 
 //convert 3D array to numeric vector
@@ -41,6 +42,7 @@ NumericVector Array3d::getMatrixRow(int row, int slice) {
 } 
 
 NumericVector Array3d::getVector() {
+  data.attr("dim") = IntegerVector::create(nrow,ncol,nslice); 
   return data; 
 } 
 

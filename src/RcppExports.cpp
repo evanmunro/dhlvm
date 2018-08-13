@@ -27,6 +27,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// testArray3D
+NumericVector testArray3D();
+RcppExport SEXP _dhlvm_testArray3D() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(testArray3D());
+    return rcpp_result_gen;
+END_RCPP
+}
 // rdirichlet_cpp
 NumericVector rdirichlet_cpp(NumericVector alpha_m);
 RcppExport SEXP _dhlvm_rdirichlet_cpp(SEXP alpha_mSEXP) {
@@ -35,17 +45,6 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type alpha_m(alpha_mSEXP);
     rcpp_result_gen = Rcpp::wrap(rdirichlet_cpp(alpha_m));
-    return rcpp_result_gen;
-END_RCPP
-}
-// timesTwo
-NumericVector timesTwo(NumericVector x);
-RcppExport SEXP _dhlvm_timesTwo(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -88,15 +87,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// discreteMS_cpp
+List discreteMS_cpp(NumericMatrix data, NumericMatrix eta, NumericMatrix alpha, int K, int steps, int burn, int thin);
+RcppExport SEXP _dhlvm_discreteMS_cpp(SEXP dataSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP KSEXP, SEXP stepsSEXP, SEXP burnSEXP, SEXP thinSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    Rcpp::traits::input_parameter< int >::type burn(burnSEXP);
+    Rcpp::traits::input_parameter< int >::type thin(thinSEXP);
+    rcpp_result_gen = Rcpp::wrap(discreteMS_cpp(data, eta, alpha, K, steps, burn, thin));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_dhlvm_rcpp_hello_world", (DL_FUNC) &_dhlvm_rcpp_hello_world, 0},
     {"_dhlvm_ldmultinom_cpp", (DL_FUNC) &_dhlvm_ldmultinom_cpp, 2},
+    {"_dhlvm_testArray3D", (DL_FUNC) &_dhlvm_testArray3D, 0},
     {"_dhlvm_rdirichlet_cpp", (DL_FUNC) &_dhlvm_rdirichlet_cpp, 1},
-    {"_dhlvm_timesTwo", (DL_FUNC) &_dhlvm_timesTwo, 1},
     {"_dhlvm_sampleState_cpp", (DL_FUNC) &_dhlvm_sampleState_cpp, 4},
     {"_dhlvm_sampleTransition_cpp", (DL_FUNC) &_dhlvm_sampleTransition_cpp, 2},
     {"_dhlvm_sampleBeta_cpp", (DL_FUNC) &_dhlvm_sampleBeta_cpp, 3},
+    {"_dhlvm_discreteMS_cpp", (DL_FUNC) &_dhlvm_discreteMS_cpp, 7},
     {NULL, NULL, 0}
 };
 

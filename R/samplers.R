@@ -82,6 +82,7 @@ sampleStateSS <- function(z,a,sigma, gamma_prev,shrink,Time,K) {
 #'
 
 sampleZ <- function(data, theta,beta,Time) { 
+  K = nrow(beta)
   z = list()
   for (t in 1:Time)
   {

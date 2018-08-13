@@ -9,12 +9,12 @@ ldmultinom_cpp <- function(x, prob) {
     .Call('_dhlvm_ldmultinom_cpp', PACKAGE = 'dhlvm', x, prob)
 }
 
-rdirichlet_cpp <- function(alpha_m) {
-    .Call('_dhlvm_rdirichlet_cpp', PACKAGE = 'dhlvm', alpha_m)
+testArray3D <- function() {
+    .Call('_dhlvm_testArray3D', PACKAGE = 'dhlvm')
 }
 
-timesTwo <- function(x) {
-    .Call('_dhlvm_timesTwo', PACKAGE = 'dhlvm', x)
+rdirichlet_cpp <- function(alpha_m) {
+    .Call('_dhlvm_rdirichlet_cpp', PACKAGE = 'dhlvm', alpha_m)
 }
 
 sampleState_cpp <- function(data, P, S_prev, beta) {
@@ -27,5 +27,9 @@ sampleTransition_cpp <- function(S, alpha) {
 
 sampleBeta_cpp <- function(data, S, eta) {
     .Call('_dhlvm_sampleBeta_cpp', PACKAGE = 'dhlvm', data, S, eta)
+}
+
+discreteMS_cpp <- function(data, eta, alpha, K, steps, burn, thin) {
+    .Call('_dhlvm_discreteMS_cpp', PACKAGE = 'dhlvm', data, eta, alpha, K, steps, burn, thin)
 }
 
