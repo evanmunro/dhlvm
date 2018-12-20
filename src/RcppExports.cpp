@@ -5,91 +5,80 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _dhlvm_rcpp_hello_world() {
+// sampleZ
+List sampleZ(List data, NumericMatrix theta, NumericMatrix beta);
+RcppExport SEXP _dhlvm_sampleZ(SEXP dataSEXP, SEXP thetaSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
-// ldmultinom_cpp
-long double ldmultinom_cpp(NumericVector x, NumericVector prob);
-RcppExport SEXP _dhlvm_ldmultinom_cpp(SEXP xSEXP, SEXP probSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type prob(probSEXP);
-    rcpp_result_gen = Rcpp::wrap(ldmultinom_cpp(x, prob));
-    return rcpp_result_gen;
-END_RCPP
-}
-// testArray3D
-NumericVector testArray3D();
-RcppExport SEXP _dhlvm_testArray3D() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(testArray3D());
-    return rcpp_result_gen;
-END_RCPP
-}
-// rdirichlet_cpp
-NumericVector rdirichlet_cpp(NumericVector alpha_m);
-RcppExport SEXP _dhlvm_rdirichlet_cpp(SEXP alpha_mSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type alpha_m(alpha_mSEXP);
-    rcpp_result_gen = Rcpp::wrap(rdirichlet_cpp(alpha_m));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sampleState_cpp
-NumericMatrix sampleState_cpp(NumericMatrix data, NumericMatrix P, NumericVector S_prev, NumericMatrix beta);
-RcppExport SEXP _dhlvm_sampleState_cpp(SEXP dataSEXP, SEXP PSEXP, SEXP S_prevSEXP, SEXP betaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type P(PSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type S_prev(S_prevSEXP);
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type theta(thetaSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleState_cpp(data, P, S_prev, beta));
+    rcpp_result_gen = Rcpp::wrap(sampleZ(data, theta, beta));
     return rcpp_result_gen;
 END_RCPP
 }
-// sampleTransition_cpp
-NumericMatrix sampleTransition_cpp(NumericVector S, NumericMatrix alpha);
-RcppExport SEXP _dhlvm_sampleTransition_cpp(SEXP SSEXP, SEXP alphaSEXP) {
+// sampleSigma
+NumericMatrix sampleSigma(NumericMatrix gamma, double v0, double s0);
+RcppExport SEXP _dhlvm_sampleSigma(SEXP gammaSEXP, SEXP v0SEXP, SEXP s0SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type S(SSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleTransition_cpp(S, alpha));
+    Rcpp::traits::input_parameter< NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< double >::type v0(v0SEXP);
+    Rcpp::traits::input_parameter< double >::type s0(s0SEXP);
+    rcpp_result_gen = Rcpp::wrap(sampleSigma(gamma, v0, s0));
     return rcpp_result_gen;
 END_RCPP
 }
-// sampleBeta_cpp
-NumericMatrix sampleBeta_cpp(NumericMatrix data, NumericVector S, NumericMatrix eta);
-RcppExport SEXP _dhlvm_sampleBeta_cpp(SEXP dataSEXP, SEXP SSEXP, SEXP etaSEXP) {
+// sampleGamma
+NumericMatrix sampleGamma(List z, NumericMatrix sigma, NumericMatrix gammaprev, double shrink);
+RcppExport SEXP _dhlvm_sampleGamma(SEXP zSEXP, SEXP sigmaSEXP, SEXP gammaprevSEXP, SEXP shrinkSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type S(SSEXP);
+    Rcpp::traits::input_parameter< List >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type gammaprev(gammaprevSEXP);
+    Rcpp::traits::input_parameter< double >::type shrink(shrinkSEXP);
+    rcpp_result_gen = Rcpp::wrap(sampleGamma(z, sigma, gammaprev, shrink));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sampleBetaLDA
+NumericMatrix sampleBetaLDA(List data, List z, NumericMatrix eta);
+RcppExport SEXP _dhlvm_sampleBetaLDA(SEXP dataSEXP, SEXP zSEXP, SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type z(zSEXP);
     Rcpp::traits::input_parameter< NumericMatrix >::type eta(etaSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleBeta_cpp(data, S, eta));
+    rcpp_result_gen = Rcpp::wrap(sampleBetaLDA(data, z, eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// discreteLDS_cpp
+List discreteLDS_cpp(List data, NumericMatrix eta, double v0, double s0, double tune, int K, int V, int steps);
+RcppExport SEXP _dhlvm_discreteLDS_cpp(SEXP dataSEXP, SEXP etaSEXP, SEXP v0SEXP, SEXP s0SEXP, SEXP tuneSEXP, SEXP KSEXP, SEXP VSEXP, SEXP stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< double >::type v0(v0SEXP);
+    Rcpp::traits::input_parameter< double >::type s0(s0SEXP);
+    Rcpp::traits::input_parameter< double >::type tune(tuneSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< int >::type V(VSEXP);
+    Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(discreteLDS_cpp(data, eta, v0, s0, tune, K, V, steps));
     return rcpp_result_gen;
 END_RCPP
 }
 // discreteMS_cpp
-List discreteMS_cpp(NumericMatrix data, NumericMatrix eta, NumericMatrix alpha, int K, int steps, int burn, int thin);
-RcppExport SEXP _dhlvm_discreteMS_cpp(SEXP dataSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP KSEXP, SEXP stepsSEXP, SEXP burnSEXP, SEXP thinSEXP) {
+List discreteMS_cpp(NumericMatrix data, NumericMatrix eta, NumericMatrix alpha, int K, int steps);
+RcppExport SEXP _dhlvm_discreteMS_cpp(SEXP dataSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP KSEXP, SEXP stepsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -98,22 +87,31 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
-    Rcpp::traits::input_parameter< int >::type burn(burnSEXP);
-    Rcpp::traits::input_parameter< int >::type thin(thinSEXP);
-    rcpp_result_gen = Rcpp::wrap(discreteMS_cpp(data, eta, alpha, K, steps, burn, thin));
+    rcpp_result_gen = Rcpp::wrap(discreteMS_cpp(data, eta, alpha, K, steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// testRgamma
+double testRgamma(double v0, double s0);
+RcppExport SEXP _dhlvm_testRgamma(SEXP v0SEXP, SEXP s0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type v0(v0SEXP);
+    Rcpp::traits::input_parameter< double >::type s0(s0SEXP);
+    rcpp_result_gen = Rcpp::wrap(testRgamma(v0, s0));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dhlvm_rcpp_hello_world", (DL_FUNC) &_dhlvm_rcpp_hello_world, 0},
-    {"_dhlvm_ldmultinom_cpp", (DL_FUNC) &_dhlvm_ldmultinom_cpp, 2},
-    {"_dhlvm_testArray3D", (DL_FUNC) &_dhlvm_testArray3D, 0},
-    {"_dhlvm_rdirichlet_cpp", (DL_FUNC) &_dhlvm_rdirichlet_cpp, 1},
-    {"_dhlvm_sampleState_cpp", (DL_FUNC) &_dhlvm_sampleState_cpp, 4},
-    {"_dhlvm_sampleTransition_cpp", (DL_FUNC) &_dhlvm_sampleTransition_cpp, 2},
-    {"_dhlvm_sampleBeta_cpp", (DL_FUNC) &_dhlvm_sampleBeta_cpp, 3},
-    {"_dhlvm_discreteMS_cpp", (DL_FUNC) &_dhlvm_discreteMS_cpp, 7},
+    {"_dhlvm_sampleZ", (DL_FUNC) &_dhlvm_sampleZ, 3},
+    {"_dhlvm_sampleSigma", (DL_FUNC) &_dhlvm_sampleSigma, 3},
+    {"_dhlvm_sampleGamma", (DL_FUNC) &_dhlvm_sampleGamma, 4},
+    {"_dhlvm_sampleBetaLDA", (DL_FUNC) &_dhlvm_sampleBetaLDA, 3},
+    {"_dhlvm_discreteLDS_cpp", (DL_FUNC) &_dhlvm_discreteLDS_cpp, 8},
+    {"_dhlvm_discreteMS_cpp", (DL_FUNC) &_dhlvm_discreteMS_cpp, 5},
+    {"_dhlvm_testRgamma", (DL_FUNC) &_dhlvm_testRgamma, 2},
     {NULL, NULL, 0}
 };
 

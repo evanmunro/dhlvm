@@ -1,6 +1,10 @@
 #include "Array3d.h"
   
 //constructors 
+
+Array3d::Array3d() {
+  Array3d(0,0,0); 
+}
 Array3d::Array3d(int row, int col, int slice) {
   nrow = row; 
   ncol = col; 

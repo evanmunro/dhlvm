@@ -3,14 +3,17 @@ Type: Package
 Title: Dynamic Hierarchical Latent Variable Models
 Version: 0.1
 Date: 2018-08-10
-Author: Evan Munro
-Maintainer: Evan Munro <evan.munro@gmail.com>
+Authors@R: person("Evan", "Munro", email = "munro@stanford.edu",
+  role = c("aut", "cre"))
 Description: Estimates markov models for categorical time series data described in Munro (2018).
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.18), 
-         MCMCpack, 
-         stats, 
-         graphics, 
-         MASS
+Imports: 
+    Rcpp,
+    MCMCpack,
+    stats,
+    graphics,
+    MASS
 LinkingTo: Rcpp
-RoxygenNote: 6.0.1
+BugReports: https://github.com/evanmunro/dhlvm/issues
+LazyData: true 
+RoxygenNote: 6.1.0
