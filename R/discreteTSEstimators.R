@@ -1,5 +1,5 @@
 #Author: Evan Munro, Stanford University 
-#This file contains the Gibbs Samplers for the various latent variable models for discrete time series
+#This file contains the Gibbs Samplers for the various latent variable models for discrete data 
 #that are being developed as part of a working paper with Serena Ng
 
 # #convert responses count to list format
@@ -88,6 +88,29 @@ discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
   return(posterior)
 }
 
+
+#' @param data NxJ matrix of responses 
+#' @param group Nx1 vector of group indicators in {1,...,C}
+#' @param eta Prior for beta: J-length list of K x L_j matrices 
+#' @param alpha Prior for alpha: C x K  vector  
+#' 
+#' @return List with posterior samples from 1) theta 2) beta 
+#' @export 
+ldaModel <- function(data,group,eta,alpha,K,steps,burn,skip) { 
+  
+#beta will be J-length list of K x L_j matrices 
+
+}
+
+gomModel <- function(data,eta,alpha,K,steps,burn,skip) { 
+  
+  
+}
+
+lcaModel <- function(data,group,eta,alpha,K,steps,burn,skip) { 
+  
+  
+}
 
 
 
