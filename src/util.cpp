@@ -10,6 +10,20 @@ namespace util {
    * 
    * @return 0-indexed location of last non-zero element in vector
    */
+  NumericVector vectorRange(int K) { 
+    NumericVector rangeVector(K); 
+    for (int i = 0; i < K; i++) { 
+      rangeVector[i] = i;  
+    }
+    return rangeVector; 
+  }
+
+  /* 
+  * @brief looks for non-zero element in a vector 
+  * @param x vector of numbers   
+  * 
+  * @return 0-indexed location of last non-zero element in vector
+  */
   int whichNonZero(NumericVector x) {
     int index = -1; 
     for (int i =0; i < x.size(); i++) { 
@@ -123,6 +137,22 @@ namespace util {
       distribution(j) = distribution(j)/sum_term;
     }
     return(distribution);
+  }
+
+
+  /* 
+   * @brief looks for non-zero element in a vector 
+   * @param x NumericMatrix Dirichlet prior    
+   * 
+   * @return Multinomial matrix initialized from Dirichlet prior matrix 
+   */
+  NumericMatrix initializeMultinomial(NumericMatrix prior) { 
+    int rows = prior.nrow(); 
+    NumericMatrix initialized(prior.nrow(), prior.ncol()); 
+    for (int r = 0; r < rows; r++) { 
+      initialized(r,_) = rdirichlet_cpp(prior(r,_)); 
+    }
+    return initialized; 
   }
 
   NumericVector softmax(NumericVector x) {

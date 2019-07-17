@@ -7,6 +7,8 @@ using namespace Rcpp;
 
 namespace util { 
 
+  NumericVector vectorRange(int K); 
+  NumericMatrix initializeMultinomial(NumericMatrix prior); 
   int whichNonZero(NumericVector x); 
   IntegerVector callRMultinom(NumericVector prob); 
   NumericVector divide(NumericVector x, NumericVector y); 
