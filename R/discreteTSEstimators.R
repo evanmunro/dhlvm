@@ -89,28 +89,29 @@ discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
 }
 
 
-#' @param data NxJ matrix of responses 
-#' @param group Nx1 vector of group indicators in {1,...,C}
-#' @param eta Prior for beta: J-length list of K x L_j matrices 
-#' @param alpha Prior for alpha: C x K  vector  
-#' 
-#' @return List with posterior samples from 1) theta 2) beta 
-#' @export 
-ldaModel <- function(data,group,eta,alpha,K,steps,burn,skip) { 
-  
-#beta will be J-length list of K x L_j matrices 
-
+#' Title
+#'
+#' @param data 
+#' @param groups 
+#' @param eta 
+#' @param alpha 
+#' @param steps 
+#' @param burn 
+#' @param skip 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ldaModel <- function(X,groups,eta,alpha,steps,burn,skip) { 
+  X = X - 1 
+  groups = groups-1 
+  posterior <- mlda_cpp(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
+  out <- seq(from=burn,to=steps,by=skip)
+  posterior$out = out 
+  return(posterior)
 }
 
-gomModel <- function(data,eta,alpha,K,steps,burn,skip) { 
-  
-  
-}
-
-lcaModel <- function(data,group,eta,alpha,K,steps,burn,skip) { 
-  
-  
-}
 
 
 

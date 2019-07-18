@@ -91,6 +91,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mlda_cpp
+List mlda_cpp(NumericMatrix data, NumericVector groups, List eta, NumericMatrix alpha, int steps);
+RcppExport SEXP _dhlvm_mlda_cpp(SEXP dataSEXP, SEXP groupsSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< List >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(mlda_cpp(data, groups, eta, alpha, steps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // testRgamma
 double testRgamma(double v0, double s0);
 RcppExport SEXP _dhlvm_testRgamma(SEXP v0SEXP, SEXP s0SEXP) {
@@ -111,6 +126,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_dhlvm_sampleBetaLDA", (DL_FUNC) &_dhlvm_sampleBetaLDA, 3},
     {"_dhlvm_discreteLDS_cpp", (DL_FUNC) &_dhlvm_discreteLDS_cpp, 8},
     {"_dhlvm_discreteMS_cpp", (DL_FUNC) &_dhlvm_discreteMS_cpp, 5},
+    {"_dhlvm_mlda_cpp", (DL_FUNC) &_dhlvm_mlda_cpp, 5},
     {"_dhlvm_testRgamma", (DL_FUNC) &_dhlvm_testRgamma, 2},
     {NULL, NULL, 0}
 };

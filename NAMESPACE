@@ -2,6 +2,7 @@
 
 export(discreteLDSModel)
 export(discreteMSFast)
+export(ldaModel)
 export(posteriorMean)
 export(topBetas)
 importFrom(Rcpp,sourceCpp)

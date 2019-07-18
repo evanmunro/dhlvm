@@ -25,6 +25,10 @@ discreteMS_cpp <- function(data, eta, alpha, K, steps) {
     .Call(`_dhlvm_discreteMS_cpp`, data, eta, alpha, K, steps)
 }
 
+mlda_cpp <- function(data, groups, eta, alpha, steps) {
+    .Call(`_dhlvm_mlda_cpp`, data, groups, eta, alpha, steps)
+}
+
 testRgamma <- function(v0, s0) {
     .Call(`_dhlvm_testRgamma`, v0, s0)
 }

@@ -15,7 +15,7 @@ List sampleBeta_cpp(NumericMatrix data,NumericVector Z,
     int K = eta_j.nrow(); 
     NumericMatrix profile_counts(K,Lj); 
     NumericMatrix beta_j(K,Lj); 
-    NumericVector data_j = data(j,_); 
+    NumericVector data_j = data(_,j); 
     for (int n=0; n< N; n++) { 
       int k = Z[n]; 
       int response = data_j[n]; 
@@ -38,20 +38,19 @@ NumericVector sampleZ_cpp(NumericMatrix data, NumericVector groups,NumericMatrix
   for (int i =0; i <N; i++) { 
     NumericVector X_i = data(i,_); 
     NumericVector prob(K); 
-    int normalization = 0; 
     NumericVector pi_c = pi(groups[i],_); 
     for (int k =0; k < K; k++) { 
       double prob_k = log(pi_c[k]); 
       for (int j=0; j<J; j++) { 
-        NumericMatrix beta_j = as<NumericMatrix>(beta[j]); 
+        NumericMatrix beta_j = as<NumericMatrix>(beta[j]);
         prob_k += log(beta_j(k,X_i[j])); 
       }
-      prob_k = exp(prob_k); 
-      normalization+=prob_k; 
+      prob[k] = exp(prob_k); 
     }
-    prob = prob/normalization; 
+    prob = prob/sum(prob); 
     z[i] = sample(util::vectorRange(K),1,true,prob)[0];  
   }
+
   return z; 
 } 
 
@@ -72,14 +71,14 @@ NumericMatrix samplepi_cpp(NumericVector groups,NumericVector z,NumericMatrix al
 }
 
 // [[Rcpp::export]]
-List lda_cpp(NumericMatrix data,NumericVector groups, List eta,
+List mlda_cpp(NumericMatrix data,NumericVector groups, List eta,
                     NumericMatrix alpha, int steps) {
   
   int K = alpha.ncol(); 
   int C = alpha.nrow(); 
   int N = data.nrow(); 
   int J = data.ncol(); 
-  Array3d pi_samp = Array3d(N,K,steps);
+  Array3d pi_samp = Array3d(C,K,steps); 
   NumericMatrix z_samp = NumericMatrix(N,steps);  
   List beta_samp(steps); 
   
@@ -93,12 +92,12 @@ List lda_cpp(NumericMatrix data,NumericVector groups, List eta,
   }
   beta_samp[0] = initBeta; 
   pi_samp.setMatrix(0,util::initializeMultinomial(alpha));
-  
   // run gibbs sampler
   for (int s=1; s< steps; s++) {
+    Rcout << s ; 
     z_samp(s,_) = sampleZ_cpp(data,groups,pi_samp.getMatrix(s-1),beta_samp[s-1]); 
-    pi_samp.setMatrix(s,samplepi_cpp(groups,z_samp(s,_),alpha)); 
-    beta_samp[s] = sampleBeta_cpp(data,pi_samp.getMatrix(s-1),eta); 
+    pi_samp.setMatrix(s,samplepi_cpp(groups,z_samp(s,_),alpha));
+    beta_samp[s] = sampleBeta_cpp(data,z_samp(s,_),eta); 
   }
   List posteriors; 
   posteriors["Z"] = z_samp; 

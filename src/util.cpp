@@ -136,6 +136,7 @@ namespace util {
     for (int j = 0; j < distribution_size; ++j) {
       distribution(j) = distribution(j)/sum_term;
     }
+   // Rcout << "From r dirichlet" << distribution << "\n"; 
     return(distribution);
   }
 
