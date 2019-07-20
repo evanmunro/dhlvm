@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List sampleZ(List data, NumericMatrix theta, NumericMatrix beta) { 
+List sampleZ_old(List data, NumericMatrix theta, NumericMatrix beta) { 
   int T = data.size(); 
   int K = theta.nrow(); 
   List z(T); 
@@ -33,19 +33,23 @@ List sampleZ(List data, NumericMatrix theta, NumericMatrix beta) {
   return z; 
 }
 
-// [[Rcpp::export]]
-NumericMatrix sampleSigma(NumericMatrix gamma, double v0, double s0) { 
+NumericMatrix sampleSigmaOld(NumericMatrix gamma, double v0, double s0) { 
   int K = gamma.nrow(); 
   int T = gamma.ncol(); 
   NumericMatrix sigma(K,K); 
   for (int k = 0 ; k < K; k ++ ) {
     NumericVector gk = gamma(k,_); 
-    NumericVector y= gk[Range(1,T)]; 
-    NumericVector x  = gk[Range(0,T-1)]; 
+    
+    double ssq = 0; 
+    for (int t=1; t<T; t++) { 
+      double diff = gk[t] - gk[t-1]; 
+      ssq += pow(diff,2); 
+    }
     double v1 = v0 + T; 
-    double s1 = s0 + util::sum_cpp((y-x)*(y-x)); 
-   // Rcout<<"s1: "<< s1 << std::endl; 
-    sigma(k,k) = 1/R::rgamma(v1/2,2/s1); 
+    double s1 = s0 + ssq; 
+    // Rcout<<"s1: "<< s1 << std::endl; 
+    //sigma(k,k) = 1/R::rgamma(v1/2,2/s1); 
+    sigma(k,k) = 1/rgamma(1,v1/2,2/s1)[0]; 
 
   } 
 
@@ -53,7 +57,7 @@ NumericMatrix sampleSigma(NumericMatrix gamma, double v0, double s0) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix sampleGamma(List z, NumericMatrix sigma,
+NumericMatrix sampleGamma_old(List z, NumericMatrix sigma,
                         NumericMatrix gammaprev,double shrink) { 
   int K = gammaprev.nrow(); 
   int T = gammaprev.ncol(); 
@@ -145,12 +149,12 @@ List discreteLDS_cpp(List data,NumericMatrix eta, double v0, double s0,
   //run gibbs sampler
   for (int s=1; s< steps; s++) {
     double shrink = tune*pow(1+s,-0.5);
-    List z = sampleZ(data,thetaDraw.getMatrix(s-1),betaDraw.getMatrix(s-1));
+    List z = sampleZ_old(data,thetaDraw.getMatrix(s-1),betaDraw.getMatrix(s-1));
     NumericVector z1  = as<NumericVector>(z[1]); 
-    gammaDraw.setMatrix(s,sampleGamma(z,sigmaDraw.getMatrix(s-1),
+    gammaDraw.setMatrix(s,sampleGamma_old(z,sigmaDraw.getMatrix(s-1),
                                     gammaDraw.getMatrix(s-1),shrink));
-    thetaDraw.setMatrix(s,util::softmax(gammaDraw.getMatrix(s)));
-    sigmaDraw.setMatrix(s,sampleSigma(gammaDraw.getMatrix(s),v0,s0));
+    thetaDraw.setMatrix(s,util::softmax_col(gammaDraw.getMatrix(s)));
+    sigmaDraw.setMatrix(s,sampleSigmaOld(gammaDraw.getMatrix(s),v0,s0));
     betaDraw.setMatrix(s,sampleBetaLDA(data,z,eta));
   }
   

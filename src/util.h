@@ -18,6 +18,7 @@ namespace util {
   NumericVector rdirichlet_cpp(NumericVector alpha_m); 
   NumericVector softmax(NumericVector x); 
   NumericMatrix softmax(NumericMatrix x); 
+  NumericMatrix softmax_col(NumericMatrix x); 
 
 }
 

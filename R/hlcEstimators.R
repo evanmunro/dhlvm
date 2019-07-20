@@ -35,26 +35,6 @@ topBetas <- function(beta,identifier,top=5) {
   return(result[1:top,])
 }
 
-#' Runs Gibbs Sampler for markov switching model for discrete time series data with c++ loop
-#' 
-#' @param data TimexV data frame of counts of data at time t with value v
-#' @param eta V-length prior for state-specific multinomial probabilities beta
-#' @param alpha K-length prior for transition matrix
-#' @param K Number of states
-#' @param steps Total number of gibbs sampling iterations 
-#' @param burn Number of iterations to discard
-#' @param skip Thinning parameter for gibbs sampler
-#'
-#' @return List with posterior mean of 1) state-specific multinomial probabilities beta 2) transition matrix 3) states
-#'
-#' @export
-discreteMSFast <- function(data,eta,alpha,K,steps,burn,skip) {
-  posterior <- discreteMS_cpp(data,eta,alpha,K,steps)
-  out <- seq(from=burn,to=steps,by=skip)
-  posterior$out = out 
-  return(posterior)
-} 
-
 #' Get posterior mean for set of posterior estimates from sampler 
 #'
 #' @param estimate 3d array from sampler 
@@ -63,6 +43,10 @@ discreteMSFast <- function(data,eta,alpha,K,steps,burn,skip) {
 #' @export
 posteriorMean <- function(estimate,out) { 
   return(apply(estimate[,,out],MARGIN=c(1,2),FUN=mean))
+}
+
+posteriorMeanForList <- function(estimate,out) { 
+  
 }
 
 #' Title
@@ -88,6 +72,51 @@ discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
   return(posterior)
 }
 
+#' Runs Gibbs Sampler for markov switching model for discrete time series data with c++ loop
+#' 
+#' @param data TimexV data frame of counts of data at time t with value v
+#' @param eta V-length prior for state-specific multinomial probabilities beta
+#' @param alpha K-length prior for transition matrix
+#' @param K Number of states
+#' @param steps Total number of gibbs sampling iterations 
+#' @param burn Number of iterations to discard
+#' @param skip Thinning parameter for gibbs sampler
+#'
+#' @return List with posterior mean of 1) state-specific multinomial probabilities beta 2) transition matrix 3) states
+#'
+#' @export
+discreteMSM <- function(data,eta,alpha,K,steps,burn,skip) {
+  posterior <- discreteMS_cpp(data,eta,alpha,K,steps)
+  out <- seq(from=burn,to=steps,by=skip)
+  posterior$out = out 
+  return(posterior)
+} 
+
+#' Title
+#'
+#' @param X 
+#' @param groups 
+#' @param eta 
+#' @param v0 
+#' @param s0 
+#' @param tune 
+#' @param steps 
+#' @param burn 
+#' @param skip 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip) { 
+  X = X - 1 
+  groups = groups-1 
+  G = length(unique(groups)) 
+  posterior <- dhlc_cpp(as.matrix(X),as.vector(groups),eta,v0,s0,tune,K,G,steps)
+  out <- seq(from=burn,to=steps,by=skip)
+  posterior$out = out 
+  return(posterior)
+}
 
 #' Title
 #'
@@ -103,10 +132,10 @@ discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
 #' @export
 #'
 #' @examples
-ldaModel <- function(X,groups,eta,alpha,steps,burn,skip) { 
+hlcModel <- function(X,groups,eta,alpha,steps,burn,skip) { 
   X = X - 1 
   groups = groups-1 
-  posterior <- mlda_cpp(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
+  posterior <- hlc_cpp(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
   out <- seq(from=burn,to=steps,by=skip)
   posterior$out = out 
   return(posterior)

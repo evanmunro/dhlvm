@@ -157,15 +157,7 @@ namespace util {
   }
 
   NumericVector softmax(NumericVector x) {
-    int n = x.size(); 
-    NumericVector result(n); 
-    double sumX = 0 ; 
-    for (int i =0; i < n; i ++) {
-      sumX = sumX + exp(x[i]); 
-    }
-    for (int i =0; i<n; i ++ ){
-      result[i] = exp(x[i])/sumX; 
-    }
+    NumericVector result = exp(x)/sum(exp(x)); 
     return result; 
   }
 
@@ -173,10 +165,21 @@ namespace util {
     int nrow = x.nrow(); 
     int ncol = x.ncol(); 
     NumericMatrix result(nrow,ncol); 
-    for (int i = 0; i < ncol; i ++) {
-      result(_,i) = softmax(x(_,i)); 
+    for (int i = 0; i < nrow; i ++) {
+      result(i,_) = softmax(x(i,_)); 
     }
     return result; 
   }
+
+  NumericMatrix softmax_col(NumericMatrix x) {
+   int nrow = x.nrow(); 
+   int ncol = x.ncol(); 
+   NumericMatrix result(nrow,ncol); 
+    for (int i = 0; i < ncol; i ++) {
+      result(_,i) = softmax(x(_,i)); 
+   }
+    return result; 
+  }
+
 
 } 
