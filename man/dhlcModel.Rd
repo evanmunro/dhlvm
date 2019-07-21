@@ -4,7 +4,7 @@
 \alias{dhlcModel}
 \title{Title}
 \usage{
-dhlcModel(X, groups, eta, v0, s0, tune, steps, burn, skip)
+dhlcModel(X, groups, eta, v0, s0, tune, K, steps, burn, skip)
 }
 \arguments{
 \item{X}{}
