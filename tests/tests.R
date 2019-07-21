@@ -71,10 +71,10 @@ library(dhlvm)
 library(Rcpp)
 J=3 
 L_j = 2 
-Nt = 1000
+Nt = 500
 N=Time*Nt
 K=2 
-Time = 100
+Time = 50
 sigma = 0.1
 groups = c(rep(1:Time,each=Nt))
 beta=list() 
@@ -205,4 +205,15 @@ tune=0.1
 posterior = discreteLDSModel(X,eta,v0,s0,tune,K,steps,burn,skip)
 
 pi.out = t(posteriorMean(posterior$theta,posterior$out))
-matplot(data.frame(truth=pi[,1],sampled=pi.out[,1]),type="l")
+matplot(data.frame(truth=pi[,1],sampled=pi.out[,2]),type="l")
+
+
+### tests for visualization functions 
+
+x = rnorm(10)
+y= rnorm(10)
+z = as.factor(rbinom(10,1,0.5))
+
+df <- melt(data.frame(x=x,y=y,z=z),id.vars=c("z","x"))
+ggplot2::ggplot(data.frame(x=x,y=y,z=z),ggplot2::aes(x=x,y=y,color=z))+ggplot2::geom_point()
+
