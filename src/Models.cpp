@@ -5,6 +5,21 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
+double posteriorLikelihood(NumericMatrix data, NumericVector z, List beta) { 
+  int J = data.ncol(); 
+  int N = data.nrow(); 
+  double likelihood = 0.0; 
+  for (int i =0; i < N; i++) { 
+    int k = z[i]; 
+    for (int j =0; j <J; j++) { 
+      NumericMatrix beta_j = as<NumericMatrix>(beta[j]);
+      int response = data(i,j); 
+      likelihood += log(beta_j(k,response)); 
+    }
+  }
+  return(likelihood); 
+}
+
 List sampleBeta(NumericMatrix data,NumericVector Z,
                     List eta) { 
   int J = data.ncol(); 
@@ -30,7 +45,6 @@ List sampleBeta(NumericMatrix data,NumericVector Z,
   return(beta); 
 }
 
-// [[Rcpp::export]]
 NumericVector sampleZ(NumericMatrix data, NumericVector groups,NumericMatrix pi, List beta) {
   int N = data.nrow(); 
   int K = pi.ncol(); 
@@ -84,6 +98,7 @@ List hlc_cpp(NumericMatrix data,NumericVector groups, List eta,
   Array3d pi_samp = Array3d(C,K,steps); 
   NumericMatrix z_samp = NumericMatrix(N,steps);  
   List beta_samp(steps); 
+  NumericVector likelihood = NumericVector(steps); 
   
   //initialize each of the parameter samples based on draws from prior
   List initBeta(J); 
@@ -100,15 +115,16 @@ List hlc_cpp(NumericMatrix data,NumericVector groups, List eta,
     z_samp(_,s) = sampleZ(data,groups,pi_samp.getMatrix(s-1),beta_samp[s-1]); 
     pi_samp.setMatrix(s,samplePi(groups,z_samp(_,s),alpha));
     beta_samp[s] = sampleBeta(data,z_samp(_,s),eta); 
+    likelihood[s] = posteriorLikelihood(data,z_samp(_,s),beta_samp[s]); 
   }
   List posteriors; 
   posteriors["Z"] = z_samp; 
   posteriors["pi"] = pi_samp.getVector(); 
   posteriors["beta"] = beta_samp; 
+  posteriors["likelihood"] = likelihood; 
   return posteriors; 
 }
 
-// [[Rcpp::export]]
 NumericMatrix sampleSigma(NumericMatrix pi, double v0, double s0) { 
   int K = pi.ncol(); 
   int T = pi.nrow(); 
@@ -128,7 +144,6 @@ NumericMatrix sampleSigma(NumericMatrix pi, double v0, double s0) {
 }
 
 
-// [[Rcpp::export]]
 NumericMatrix sampleGamma(NumericVector groups, NumericVector z, 
                           NumericMatrix gammaPrev,NumericMatrix sigma,double shrink) {
   int K = gammaPrev.ncol(); 

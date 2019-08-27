@@ -4,7 +4,7 @@
 \alias{plotPisComp}
 \title{Title}
 \usage{
-plotPisComp(pi.ev, dates, comp, k)
+plotPisComp(pi.ev, dates, comp)
 }
 \arguments{
 \item{pi.ev}{}

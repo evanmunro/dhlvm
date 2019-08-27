@@ -5,33 +5,6 @@
 
 using namespace Rcpp;
 
-// sampleBeta
-List sampleBeta(NumericMatrix data, NumericVector Z, List eta);
-RcppExport SEXP _dhlvm_sampleBeta(SEXP dataSEXP, SEXP ZSEXP, SEXP etaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< List >::type eta(etaSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleBeta(data, Z, eta));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sampleZ
-NumericVector sampleZ(NumericMatrix data, NumericVector groups, NumericMatrix pi, List beta);
-RcppExport SEXP _dhlvm_sampleZ(SEXP dataSEXP, SEXP groupsSEXP, SEXP piSEXP, SEXP betaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type pi(piSEXP);
-    Rcpp::traits::input_parameter< List >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleZ(data, groups, pi, beta));
-    return rcpp_result_gen;
-END_RCPP
-}
 // hlc_cpp
 List hlc_cpp(NumericMatrix data, NumericVector groups, List eta, NumericMatrix alpha, int steps);
 RcppExport SEXP _dhlvm_hlc_cpp(SEXP dataSEXP, SEXP groupsSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP stepsSEXP) {
@@ -44,34 +17,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
     rcpp_result_gen = Rcpp::wrap(hlc_cpp(data, groups, eta, alpha, steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sampleSigma
-NumericMatrix sampleSigma(NumericMatrix pi, double v0, double s0);
-RcppExport SEXP _dhlvm_sampleSigma(SEXP piSEXP, SEXP v0SEXP, SEXP s0SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type pi(piSEXP);
-    Rcpp::traits::input_parameter< double >::type v0(v0SEXP);
-    Rcpp::traits::input_parameter< double >::type s0(s0SEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleSigma(pi, v0, s0));
-    return rcpp_result_gen;
-END_RCPP
-}
-// sampleGamma
-NumericMatrix sampleGamma(NumericVector groups, NumericVector z, NumericMatrix gammaPrev, NumericMatrix sigma, double shrink);
-RcppExport SEXP _dhlvm_sampleGamma(SEXP groupsSEXP, SEXP zSEXP, SEXP gammaPrevSEXP, SEXP sigmaSEXP, SEXP shrinkSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type gammaPrev(gammaPrevSEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< double >::type shrink(shrinkSEXP);
-    rcpp_result_gen = Rcpp::wrap(sampleGamma(groups, z, gammaPrev, sigma, shrink));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -181,11 +126,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dhlvm_sampleBeta", (DL_FUNC) &_dhlvm_sampleBeta, 3},
-    {"_dhlvm_sampleZ", (DL_FUNC) &_dhlvm_sampleZ, 4},
     {"_dhlvm_hlc_cpp", (DL_FUNC) &_dhlvm_hlc_cpp, 5},
-    {"_dhlvm_sampleSigma", (DL_FUNC) &_dhlvm_sampleSigma, 3},
-    {"_dhlvm_sampleGamma", (DL_FUNC) &_dhlvm_sampleGamma, 5},
     {"_dhlvm_dhlc_cpp", (DL_FUNC) &_dhlvm_dhlc_cpp, 9},
     {"_dhlvm_sampleZ_old", (DL_FUNC) &_dhlvm_sampleZ_old, 3},
     {"_dhlvm_sampleGamma_old", (DL_FUNC) &_dhlvm_sampleGamma_old, 4},
