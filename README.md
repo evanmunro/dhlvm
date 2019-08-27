@@ -8,8 +8,8 @@ Installation is through the R package `devtools`:
 devtools::install_github("evanmunro/dhlvm")
 ```
 
-Example code for estimating and analyzing the static model, using DHS survey data can be found at TBD repository for the paper.
+Example code for estimating and analyzing the static model, using DHS survey data and labor market data can be found at TBD repository for the paper.
 
-Example code for the dynamic model, using the Bank of England inflation attitudes survey data, is at TBD repository.  
+Example code for the dynamic model, using the Michigan Survey of Consumers data, is at TBD repository.  
 
-Example code incorporating mixed and continuous categorical data is at TBD.
+
