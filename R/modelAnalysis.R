@@ -7,6 +7,31 @@
 #'
 #' @examples
 #' @export 
+calculateLikelihood <- function(posterior,data) { 
+  out <- posterior$out 
+  zs <- posterior$Z[,out]
+  zs <- lapply(1:ncol(zs), function(j) zs[,j]) 
+  betas <- posterior$beta[out] 
+  callCPPLik <- function(z,beta) { 
+    return(posteriorLikelihood(data,z,beta))
+  }
+  lik <- mapply(FUN=callCPPLik,zs,betas)
+  posterior$likelihood <- lik 
+ 
+  print(2*(mean(lik)-var(lik)))
+  return(lik)
+}
+
+
+#' Title
+#'
+#' @param posterior 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' @export 
 aicm <- function(posterior) {
   
   likelihood <- posterior$likelihood[posterior$out] 
