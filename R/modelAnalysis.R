@@ -16,9 +16,9 @@ calculateLikelihood <- function(posterior,data) {
     return(posteriorLikelihood(data,z,beta))
   }
   lik <- mapply(FUN=callCPPLik,zs,betas)
-  posterior$likelihood <- lik 
+  posterior$likelihood <- lik
  
-  print(2*(mean(lik)-var(lik)))
+  print(-2*(mean(lik)-var(lik)))
   return(lik)
 }
 
@@ -35,7 +35,7 @@ calculateLikelihood <- function(posterior,data) {
 aicm <- function(posterior) {
   
   likelihood <- posterior$likelihood[posterior$out] 
-  aic <- 2*(mean(likelihood)-var(likelihood)) 
+  aic <- -2*(mean(likelihood)-var(likelihood)) 
   return(aic) 
 }
 
