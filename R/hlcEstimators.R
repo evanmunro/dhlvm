@@ -1,8 +1,8 @@
 #Author: Evan Munro, Stanford University 
-#This file contains the Gibbs Samplers for latent variable models for discrete data 
-#that are being developed as part of a working paper with Serena Ng
+#This file contains the Gibbs Samplers for Bayesian hierarchical latent variable models for categorical survey data 
+#that are described in a working paper with Serena Ng 
 
-# #convert responses count to list format
+# helper utility: convert responses count to list format
 countToListInput <- function(X) {
   Time <- nrow(X)
   V <- ncol(X)
@@ -13,7 +13,7 @@ countToListInput <- function(X) {
   return(result)
 }
 
-#' Title
+#' Old HLC model with J=1
 #'
 #' @param data XxV matrix of counts 
 #' @param eta prior for dirichlet dist for beta
@@ -26,7 +26,6 @@ countToListInput <- function(X) {
 #' @param skip thinning iterations for sampler
 #'
 #' @return List with posterior samples from 1) theta 2) sigma 3) beta
-#' @export
 discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
   V <- ncol(data)
   data <- countToListInput(data)
@@ -47,8 +46,6 @@ discreteLDSModel <- function(data,eta,v0,s0,tune,K,steps,burn,skip) {
 #' @param skip Thinning parameter for gibbs sampler
 #'
 #' @return List with posterior mean of 1) state-specific multinomial probabilities beta 2) transition matrix 3) states
-#'
-#' @export
 discreteMSM <- function(data,eta,alpha,K,steps,burn,skip) {
   posterior <- discreteMS_cpp(data,eta,alpha,K,steps)
   out <- seq(from=burn,to=steps,by=skip)
@@ -56,22 +53,21 @@ discreteMSM <- function(data,eta,alpha,K,steps,burn,skip) {
   return(posterior)
 } 
 
-#' Title
+#' Run MCMC sampler for LDA-DS Model 
 #'
-#' @param X 
-#' @param groups 
-#' @param eta 
-#' @param v0 
-#' @param s0 
-#' @param tune 
-#' @param steps 
-#' @param burn 
-#' @param skip 
+#' @param X N x J matrix of responses 
+#' @param groups N x 1 vector of group membership value in 1 to G 
+#' @param eta J length list of K x L_j matrices, Dirichlet prior for beta
+#' @param v0 Gamma shape prior 
+#' @param s0 Gamma rate prior 
+#' @param tune Parameter a in Welling and Teh 2011 for shrinkage of gradient descent steps and variance of noise 
+#' @param K Number of classes 
+#' @param steps Number of MCMC steps 
+#' @param burn Burn-in iterations for sampler
+#' @param skip Thinning iterations for sampler 
 #'
-#' @return
+#' @return List of full posterior sample for each parameter in the model 
 #' @export
-#'
-#' @examples
 dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip) { 
   X = X - 1 
   groups = groups-1 
@@ -82,20 +78,18 @@ dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip) {
   return(posterior)
 }
 
-#' Title
+#' Run MCMC sampler for LDA-S Model 
 #'
-#' @param data 
-#' @param groups 
-#' @param eta 
-#' @param alpha 
-#' @param steps 
-#' @param burn 
-#' @param skip 
+#' @param X N x J matrix of responses
+#' @param groups N x 1 vector of group membership value in 1 to G 
+#' @param eta J length list of K x L_j matrices, Dirichlet prior for beta
+#' @param alpha G x K matrix, Dirichlet prior for pi 
+#' @param steps Number of MCMC steps 
+#' @param burn Burn-in iterations for sampler
+#' @param skip Thinning iterations for sampler
 #'
-#' @return
+#' @return List of full posterior sample for each parameter in the model 
 #' @export
-#'
-#' @examples
 hlcModel <- function(X,groups,eta,alpha,steps,burn,skip) { 
   X = X - 1 
   groups = groups-1 

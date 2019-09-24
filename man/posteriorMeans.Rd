@@ -2,15 +2,16 @@
 % Please edit documentation in R/modelAnalysis.R
 \name{posteriorMeans}
 \alias{posteriorMeans}
-\title{Title}
+\title{Get posterior mean of parameters}
 \usage{
 posteriorMeans(post)
 }
 \arguments{
-\item{post}{}
-
-\item{plotPis}{}
+\item{post}{PosteriorSamples object from running MCMC for LDA-S or LDA-DS}
+}
+\value{
+PosteriorMean object with attributes for each parameter in the model
 }
 \description{
-Title
+Get posterior mean of parameters
 }

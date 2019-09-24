@@ -2,25 +2,28 @@
 % Please edit documentation in R/hlcEstimators.R
 \name{hlcModel}
 \alias{hlcModel}
-\title{Title}
+\title{Run MCMC sampler for LDA-S Model}
 \usage{
 hlcModel(X, groups, eta, alpha, steps, burn, skip)
 }
 \arguments{
-\item{groups}{}
+\item{X}{N x J matrix of responses}
 
-\item{eta}{}
+\item{groups}{N x 1 vector of group membership value in 1 to G}
 
-\item{alpha}{}
+\item{eta}{J length list of K x L_j matrices, Dirichlet prior for beta}
 
-\item{steps}{}
+\item{alpha}{G x K matrix, Dirichlet prior for pi}
 
-\item{burn}{}
+\item{steps}{Number of MCMC steps}
 
-\item{skip}{}
+\item{burn}{Burn-in iterations for sampler}
 
-\item{data}{}
+\item{skip}{Thinning iterations for sampler}
+}
+\value{
+List of full posterior sample for each parameter in the model
 }
 \description{
-Title
+Run MCMC sampler for LDA-S Model
 }

@@ -6,7 +6,7 @@
 \alias{dhlvm-package}
 \title{dhlvm: Dynamic Hierarchical Latent Variable Models}
 \description{
-Estimates markov models for categorical time series data described in Munro (2018).
+Estimates Bayesian hierarchical latent variable models for survey data.
 }
 \references{
 \href{http://evanmunro.ca/files/discreteTS.pdf}{Munro (2018)}

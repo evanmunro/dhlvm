@@ -2,18 +2,20 @@ Package: dhlvm
 Type: Package
 Title: Dynamic Hierarchical Latent Variable Models
 Version: 0.1
-Date: 2018-08-10
+Date: 2019-09-23
 Authors@R: person("Evan", "Munro", email = "munro@stanford.edu",
   role = c("aut", "cre"))
-Description: Estimates markov models for categorical time series data described in Munro (2018).
+Description: Estimates Bayesian hierarchical latent variable models for survey data. 
 License: GPL (>= 2)
 Imports: 
+    reshape2, 
+    ggplot2, 
     Rcpp,
-    MCMCpack,
     stats,
     graphics,
     MASS
 LinkingTo: Rcpp
 BugReports: https://github.com/evanmunro/dhlvm/issues
 LazyData: true 
+Encoding: UTF-8
 RoxygenNote: 6.1.0

@@ -2,19 +2,20 @@
 % Please edit documentation in R/modelAnalysis.R
 \name{plotPisComp}
 \alias{plotPisComp}
-\title{Title}
+\title{Plot time specific class probability vs another time series (for LDA-DS)}
 \usage{
 plotPisComp(pi.ev, dates, comp)
 }
 \arguments{
-\item{pi.ev}{}
+\item{pi.ev}{Tx1 vector of probabilities}
 
-\item{dates}{}
+\item{dates}{T-length vector of dates}
 
-\item{comp}{}
-
-\item{k}{}
+\item{comp}{Tx1 vector of metric to plot pi_k}
+}
+\value{
+saves plot in current working directory
 }
 \description{
-Title
+Plot time specific class probability vs another time series (for LDA-DS)
 }

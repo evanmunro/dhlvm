@@ -2,17 +2,20 @@
 % Please edit documentation in R/modelAnalysis.R
 \name{plotBetas}
 \alias{plotBetas}
-\title{Title}
+\title{Plot class-specific distributions over responses in bar chart}
 \usage{
 plotBetas(betas, response_codes = NULL, questions = NULL)
 }
 \arguments{
-\item{betas}{}
+\item{betas}{J-length list of K x L_j matrices of class-specific distributions over responses}
 
-\item{questions}{}
+\item{response_codes}{Optional J length list, each containing a vector of response codes for each question to plot}
 
-\item{rsponse_codes}{}
+\item{questions}{Optional J length vector of question labels to title each graph}
+}
+\value{
+Saves plots in current working directlry
 }
 \description{
-Title
+Plot class-specific distributions over responses in bar chart
 }

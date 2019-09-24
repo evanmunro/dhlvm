@@ -2,29 +2,34 @@
 % Please edit documentation in R/hlcEstimators.R
 \name{dhlcModel}
 \alias{dhlcModel}
-\title{Title}
+\title{Run MCMC sampler for LDA-DS Model}
 \usage{
 dhlcModel(X, groups, eta, v0, s0, tune, K, steps, burn, skip)
 }
 \arguments{
-\item{X}{}
+\item{X}{N x J matrix of responses}
 
-\item{groups}{}
+\item{groups}{N x 1 vector of group membership value in 1 to G}
 
-\item{eta}{}
+\item{eta}{J length list of K x L_j matrices, Dirichlet prior for beta}
 
-\item{v0}{}
+\item{v0}{Gamma shape prior}
 
-\item{s0}{}
+\item{s0}{Gamma rate prior}
 
-\item{tune}{}
+\item{tune}{Parameter a in Welling and Teh 2011 for shrinkage of gradient descent steps and variance of noise}
 
-\item{steps}{}
+\item{K}{Number of classes}
 
-\item{burn}{}
+\item{steps}{Number of MCMC steps}
 
-\item{skip}{}
+\item{burn}{Burn-in iterations for sampler}
+
+\item{skip}{Thinning iterations for sampler}
+}
+\value{
+List of full posterior sample for each parameter in the model
 }
 \description{
-Title
+Run MCMC sampler for LDA-DS Model
 }

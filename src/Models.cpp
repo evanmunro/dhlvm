@@ -5,19 +5,27 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double posteriorLikelihood(NumericMatrix data, NumericVector z, List beta) { 
+double posteriorLikelihood(NumericMatrix data, NumericVector groups, NumericMatrix pi, List beta) { 
   int J = data.ncol(); 
   int N = data.nrow(); 
+  int K = pi.ncol(); 
   double likelihood = 0.0; 
   for (int i =0; i < N; i++) { 
-    int k = z[i]; 
-    for (int j =0; j <J; j++) { 
-      NumericMatrix beta_j = as<NumericMatrix>(beta[j]);
-      int response = data(i,j); 
-      likelihood += log(beta_j(k,response)); 
+    double likelihood_i = 0.0; 
+    for (int k=0; k< K; k++) {  
+      //double likelihood_k = log(pi[groups[i],k]); 
+      double likelihood_k = pi(groups[i],k); 
+      for (int j =0; j <J; j++) { 
+        NumericMatrix beta_j = as<NumericMatrix>(beta[j]);
+        int response = data(i,j); 
+        //likelihood_k = log(beta_j(k,response)); 
+        likelihood_k = likelihood_k*beta_j(k,response); 
+      }
+      likelihood_i += likelihood_k; 
     }
+    likelihood+= log(likelihood_i);  
   }
-  return(likelihood/N); 
+  return(likelihood); 
 }
 
 List sampleBeta(NumericMatrix data,NumericVector Z,
@@ -98,7 +106,7 @@ List hlc_cpp(NumericMatrix data,NumericVector groups, List eta,
   Array3d pi_samp = Array3d(C,K,steps); 
   NumericMatrix z_samp = NumericMatrix(N,steps);  
   List beta_samp(steps); 
-  NumericVector likelihood = NumericVector(steps); 
+  //NumericVector likelihood = NumericVector(steps); 
   
   //initialize each of the parameter samples based on draws from prior
   List initBeta(J); 
@@ -115,13 +123,14 @@ List hlc_cpp(NumericMatrix data,NumericVector groups, List eta,
     z_samp(_,s) = sampleZ(data,groups,pi_samp.getMatrix(s-1),beta_samp[s-1]); 
     pi_samp.setMatrix(s,samplePi(groups,z_samp(_,s),alpha));
     beta_samp[s] = sampleBeta(data,z_samp(_,s),eta); 
-    likelihood[s] = posteriorLikelihood(data,z_samp(_,s),beta_samp[s]); 
+    //likelihood[s] = posteriorLikelihood(data,z_samp(_,s),beta_samp[s]); 
+    //likelihood[s] = posteriorLikelihood(data,groups,pi_samp.getMatrix(s),beta_samp[s]); 
   }
   List posteriors; 
   posteriors["Z"] = z_samp; 
   posteriors["pi"] = pi_samp.getVector(); 
   posteriors["beta"] = beta_samp; 
-  posteriors["likelihood"] = likelihood; 
+  //posteriors["likelihood"] = likelihood; 
   return posteriors; 
 }
 
@@ -191,7 +200,7 @@ List dhlc_cpp(NumericMatrix data,NumericVector groups, List eta,
   Array3d piDraw = Array3d(T,K,steps); 
   Array3d sigmaDraw = Array3d(K,K,steps); 
   NumericMatrix zDraw = NumericMatrix(N,steps);  
-  NumericVector likelihood = NumericVector(steps); 
+  //NumericVector likelihood = NumericVector(steps); 
   List betaDraw(steps); 
   
   //initialize each of the parameter samples based on draws from prior
@@ -229,7 +238,8 @@ List dhlc_cpp(NumericMatrix data,NumericVector groups, List eta,
     piDraw.setMatrix(s,util::softmax(gammaDraw.getMatrix(s))); 
     sigmaDraw.setMatrix(s,sampleSigma(gammaDraw.getMatrix(s),v0,s0)); 
     betaDraw[s] = sampleBeta(data,zDraw(_,s),eta); 
-    likelihood[s]= posteriorLikelihood(data,zDraw(_,s),betaDraw[s]); 
+    //likelihood[s]= posteriorLikelihood(data,zDraw(_,s),betaDraw[s]); 
+    //likelihood[s]= posteriorLikelihood(data,groups,piDraw.getMatrix(s),betaDraw[s]); 
   }
   
   List posteriors; 
@@ -237,7 +247,7 @@ List dhlc_cpp(NumericMatrix data,NumericVector groups, List eta,
   posteriors["sigma"] = sigmaDraw.getVector(); 
   posteriors["pi"] = piDraw.getVector(); 
   posteriors["beta"] = betaDraw; 
-  posteriors["likelihood"] = likelihood; 
+  //posteriors["likelihood"] = likelihood; 
   return posteriors; 
 }
 

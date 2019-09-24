@@ -6,15 +6,16 @@
 using namespace Rcpp;
 
 // posteriorLikelihood
-double posteriorLikelihood(NumericMatrix data, NumericVector z, List beta);
-RcppExport SEXP _dhlvm_posteriorLikelihood(SEXP dataSEXP, SEXP zSEXP, SEXP betaSEXP) {
+double posteriorLikelihood(NumericMatrix data, NumericVector groups, NumericMatrix pi, List beta);
+RcppExport SEXP _dhlvm_posteriorLikelihood(SEXP dataSEXP, SEXP groupsSEXP, SEXP piSEXP, SEXP betaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type z(zSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type pi(piSEXP);
     Rcpp::traits::input_parameter< List >::type beta(betaSEXP);
-    rcpp_result_gen = Rcpp::wrap(posteriorLikelihood(data, z, beta));
+    rcpp_result_gen = Rcpp::wrap(posteriorLikelihood(data, groups, pi, beta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -139,7 +140,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dhlvm_posteriorLikelihood", (DL_FUNC) &_dhlvm_posteriorLikelihood, 3},
+    {"_dhlvm_posteriorLikelihood", (DL_FUNC) &_dhlvm_posteriorLikelihood, 4},
     {"_dhlvm_hlc_cpp", (DL_FUNC) &_dhlvm_hlc_cpp, 5},
     {"_dhlvm_dhlc_cpp", (DL_FUNC) &_dhlvm_dhlc_cpp, 9},
     {"_dhlvm_sampleZ_old", (DL_FUNC) &_dhlvm_sampleZ_old, 3},

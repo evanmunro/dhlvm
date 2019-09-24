@@ -2,7 +2,7 @@
 % Please edit documentation in R/hlcEstimators.R
 \name{discreteLDSModel}
 \alias{discreteLDSModel}
-\title{Title}
+\title{Old HLC model with J=1}
 \usage{
 discreteLDSModel(data, eta, v0, s0, tune, K, steps, burn, skip)
 }
@@ -29,5 +29,5 @@ discreteLDSModel(data, eta, v0, s0, tune, K, steps, burn, skip)
 List with posterior samples from 1) theta 2) sigma 3) beta
 }
 \description{
-Title
+Old HLC model with J=1
 }

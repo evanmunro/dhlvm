@@ -2,15 +2,18 @@
 % Please edit documentation in R/modelAnalysis.R
 \name{checkIdCondition}
 \alias{checkIdCondition}
-\title{Title}
+\title{Check necessary condition for identification}
 \usage{
 checkIdCondition(G, Lj)
 }
 \arguments{
-\item{G}{}
+\item{G}{number of groups}
 
-\item{Lj}{}
+\item{Lj}{J length vector with number of responses for each question}
+}
+\value{
+The maximum number of classes K that meet the identification condition given G, Lj
 }
 \description{
-Title
+Check necessary condition for identification
 }
