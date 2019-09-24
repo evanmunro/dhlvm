@@ -1,8 +1,8 @@
-### A Dynamic Hierarchical Latent Class Model for Categorical and Mixed Survey Data
+### Estimation and Analysis of LDA-S and LDA-DS Models for Categorical Survey Data
 
 The package contains code to estimate and analyze LDA-S and LDA-DS models, which are bayesian hierarchical latent variable models for analyzing categorical survey data. 
 
-Installation is through the R package `devtools`:
+Installation is thrModelough the R package `devtools`:
 
 ```
 devtools::install_github("evanmunro/dhlvm")
