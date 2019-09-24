@@ -1,6 +1,6 @@
 ### A Dynamic Hierarchical Latent Class Model for Categorical and Mixed Survey Data
 
-The package contains static and dynamic versions of the hierarchical latent class model describe in Munro and Ng 2019.
+The package contains code to estimate and analyze LDA-S and LDA-DS models, which are bayesian hierarchical latent variable models for analyzing categorical survey data. 
 
 Installation is through the R package `devtools`:
 
@@ -8,8 +8,9 @@ Installation is through the R package `devtools`:
 devtools::install_github("evanmunro/dhlvm")
 ```
 
-Example code for estimating and analyzing the static model, using DHS survey data and labor market data can be found at TBD repository for the paper.
+A simple vignette which describes the basic functionality of the package is [TBD]. 
 
-Example code for the dynamic model, using the Michigan Survey of Consumers data, is at TBD repository.  
+Additional scripts that apply both models to analyze data from the DHS, Michigan Survey of Consumers, and the NLSYM can be found at the repository [hlvm-survey-paper](https://www.github.com/evanmunro/hlvm-survey-paper). 
+
 
 
