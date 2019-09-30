@@ -19,3 +19,7 @@ BugReports: https://github.com/evanmunro/dhlvm/issues
 LazyData: true 
 Encoding: UTF-8
 RoxygenNote: 6.1.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
