@@ -1,40 +1,10 @@
-#' Converts N x J response matrix to G x L response frequency matrix 
-#'
-#' @param X the N x J response matrix 
-#' @param groups N length vector of group membership indictors in 1,..,G 
-#'
-#' @return Y, a G x L response frequency matrix 
-#' @export
-#'
-xtoAdjacency <- function(X,groups){ 
-  N = nrow(X)
-  J = ncol(X) 
-  G = length(unique(groups)) 
-  L = apply(X,MARGIN=2,FUN=function(x){return(length(unique(x)))})
-  V = sum(L)
-  Y = matrix(0,nrow=G,ncol=V)
-  for (i in 1:N) {
-    for (j in 1:J) {
-      Y[groups[i],sum(L[1:(j-1)])+X[i,j]] = Y[groups[i],sum(L[1:(j-1)])+X[i,j]] + 1 
-    } 
-  }
-  for (j in 1:J){
-    for (g in 1:G) {
-      Y[g,(sum(L[1:(j-1)])+1):(sum(L[1:j]))] =Y[g,(sum(L[1:(j-1)])+1):(sum(L[1:j]))]/sum(Y[g,(sum(L[1:(j-1)])+1):(sum(L[1:j]))])
-    }  
-  }
-  
-  return(Y)
-  
-}
-
 #' Calculate approximate BIC for the model 
 #'
 #' @param data N x J response matrix  
 #' @param groups N length vector of group membership indicators in 1,..,G  
-#' @param pi  G x K matrix of group-specific distributions over classes 
-#' @param beta J-length list of K x L_j class-specific response distributions 
-#' @param dynamic Is this a DHLC model? 
+#' @param pi  G x K matrix of group-specific distributions over classes, usually posterior mean
+#' @param beta J-length list of K x L_j class-specific response distributions, usually posterior mean 
+#' @param dynamic Adjusts number of parameters if this is a DHLC model 
 #' 
 #' @return BIC value for model with provided data and parameters 
 #' @export
@@ -72,39 +42,11 @@ checkIdCondition<- function(G,Lj) {
   print(paste("max K is ",floor(condition),sep="")) 
 }
 
-posteriorMean <- function(estimate,out) { 
-  return(apply(estimate[,,out],MARGIN=c(1,2),FUN=mean))
-}
-
-posteriorMeanForBeta <- function(betas,out) { 
-  posterior_to_avg <- betas[out]
-  J = length(betas[[1]])  
-  expected_values <- list(J) 
-  for (j in 1:J) { 
-    get_j_matrices <- lapply(posterior_to_avg,FUN = function(x,j) {return(x[[j]])},j)
-    expected_values[[j]] <- Reduce("+",get_j_matrices)/length(get_j_matrices) 
-  }
-  return(expected_values)
-}
-
-countInstance <- function(k,x) { 
-  return(sum(x==k))
-}
-
-countMultipleInstances<- function(x,K) { 
-  return(sapply(0:(K-1),countInstance,x))
-}
-
-posteriorProbZ <- function(Z,out,K) { 
-  Z_counts <- t(apply(Z[,out],MARGIN=1,FUN=countMultipleInstances,K)) 
-  return(Z_counts/apply(Z_counts,MARGIN=1,FUN=sum)) 
-}
-
 #' Get posterior mean of parameters 
 #'
-#' @param post PosteriorSamples object from running MCMC for LDA-S or LDA-DS 
+#' @param post Posterior sample from running MCMC for LDA-S or LDA-DS 
 #'
-#' @return PosteriorMean object with attributes for each parameter in the model
+#' @return List with attribute containing posterior mean for each parameter in the model
 #' @export
 posteriorMeans <- function(post) { 
   posterior_mean <- list() 
@@ -119,19 +61,22 @@ posteriorMeans <- function(post) {
   return(posterior_mean) 
 }
 
-#' Plot time specific class probability vs another time series (for LDA-DS)
+#' Plot time specific class probabilies, possibly vs another time series for LDA-DS
 #'
-#' @param pi.ev Tx1 vector of probabilities
+#' @param data TxM DataFrame to plot over time 
 #' @param dates T-length vector of dates
-#' @param comp Tx1 vector of metric to plot pi_k
+#' @param path location to save plots 
+#' @param save whether or not to save the plot 
 #'
-#' @return saves plot in current working directory 
+#' @return Displays plot 
 #' @export
-plotPisComp <- function(pi.ev,dates,comp) { 
-  df <- data.frame(date=dates,y1=pi.ev,y2=comp) 
+plotPis <- function(data,dates,path="") { 
+  data$date <- dates 
   df <- reshape2::melt(df,id.vars=c("date"))
   ggplot2::ggplot(df,ggplot2::aes(x="date",y="value",color="variable"))+ggplot2::geom_line() 
-  ggplot2::ggsave("pi_comp.pdf") 
+  if(save) { 
+    ggplot2::ggsave(paste(path,"pi_comp.pdf",sep="")) 
+  } 
 }
 
 #' Plot class-specific distributions over responses in bar chart 
@@ -139,10 +84,11 @@ plotPisComp <- function(pi.ev,dates,comp) {
 #' @param betas J-length list of K x L_j matrices of class-specific distributions over responses 
 #' @param response_codes Optional J length list, each containing a vector of response codes for each question to plot
 #' @param questions Optional J length vector of question labels to title each graph 
+#' @param path location to save plots 
 #'
-#' @return Saves plots in current working directlry 
+#' @return Saves plots of beta for each question to path 
 #' @export 
-plotBetas <- function(betas,response_codes=NULL,questions=NULL) { 
+plotBetas <- function(betas,response_codes=NULL,questions=NULL,path="") { 
   J = length(betas)
   K = nrow(betas[[1]])
   for (j in 1:J) { 
@@ -176,4 +122,33 @@ plotBetas <- function(betas,response_codes=NULL,questions=NULL) {
       ggplot2::geom_bar(stat='identity', position='dodge')+ggplot2::ggtitle(title)
     ggplot2::ggsave(filename) 
   }
+}
+
+
+posteriorMean <- function(estimate,out) { 
+  return(apply(estimate[,,out],MARGIN=c(1,2),FUN=mean))
+}
+
+posteriorMeanForBeta <- function(betas,out) { 
+  posterior_to_avg <- betas[out]
+  J = length(betas[[1]])  
+  expected_values <- list(J) 
+  for (j in 1:J) { 
+    get_j_matrices <- lapply(posterior_to_avg,FUN = function(x,j) {return(x[[j]])},j)
+    expected_values[[j]] <- Reduce("+",get_j_matrices)/length(get_j_matrices) 
+  }
+  return(expected_values)
+}
+
+countInstance <- function(k,x) { 
+  return(sum(x==k))
+}
+
+countMultipleInstances<- function(x,K) { 
+  return(sapply(0:(K-1),countInstance,x))
+}
+
+posteriorProbZ <- function(Z,out,K) { 
+  Z_counts <- t(apply(Z[,out],MARGIN=1,FUN=countMultipleInstances,K)) 
+  return(Z_counts/apply(Z_counts,MARGIN=1,FUN=sum)) 
 }

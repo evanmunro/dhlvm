@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Dimension reduction of categorical survey data using the R package `dhlvm`"
+author: "Evan Munro"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -16,50 +16,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+`dhlvm` is an R package for estimating and analyzing the output of hierarchical latent variable models for both time series and cross-sectional survey data. The models are described in more detail in the following paper. This vignette uses the notation in the paper, and provides an overview of the R package functionality. 
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+For this tutorial, the `dhlvm` package includes a raw survey dataset `inflat`. It includes the responses of 2,000 individuals to 5 questions from the Bank of England Inflation Attitudes Survey. The responses are quarterly, from June XX to July XX. 
 
-## Vignette Info
+### Data cleaning 
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+For a dataset with $N$ survey respondents and $J$ questions, `dhlvm` expects two data inputs. The first is an $N x J$ matrix of survey responses, where each $X_{ij}$ is a numeric value from 1 to $L_j$ where $L_j$ is the total number of responses. This is a numeric score that corresponds to a categorical response. The function 
 
-## Styles
+### Static model estimation
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+First, we ignore that the responses to the BoE inflation survey data was collected over time, and we group individuals by education level and estimate an LDA-S model. The key inputs are
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+### Dynamic model estimation 
 
-## Figures
+Next, we recognize that a model that takes dynamics into account is better suited for survey data collected over time. To estimate a dynamic model, we group individuals by time instead of by XX. We then estimate an LDA-DS model. The inputs compared to the static model are the same, except that we provide an Inverse-Gamma prior for the variance of the random walk process in the lognormal distribution of $\pi_t$, rather than a Dirichlet prior for the multinomial distribution of $\pi_g$ in the static case. 
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+### Analyzing model posteriors 
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+The functions for analyzing the models are the same for both the dynamic and static models. The estimation procedure returns the full set of posterior draws for each of the parameters in the model. The first step is to calculate the posterior mean of all the parameters in the model: 
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+```{r} 
 
-## More Examples
+``` 
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+Then, functions are available for plotting the estimated $\pi$, the group/time-specific distribution over classes, either alone or against another data series. 
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
+In addition, there are functions for plotting $\beta$, the class-specific distribution over responses for each question. 
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+For selection 
