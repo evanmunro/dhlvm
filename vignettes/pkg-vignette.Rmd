@@ -42,8 +42,5 @@ The functions for analyzing the models are the same for both the dynamic and sta
 
 ``` 
 
-Then, functions are available for plotting the estimated $\pi$, the group/time-specific distribution over classes, either alone or against another data series. 
-
-In addition, there are functions for plotting $\beta$, the class-specific distribution over responses for each question. 
 
 For selection 

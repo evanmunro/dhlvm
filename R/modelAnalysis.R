@@ -1,3 +1,4 @@
+
 #' Calculate approximate BIC for the model 
 #'
 #' @param data N x J response matrix  
@@ -9,10 +10,9 @@
 #' @return BIC value for model with provided data and parameters 
 #' @export
 bic <- function(data,groups,pi,beta,dynamic=F) { 
-  data <- data -1 
-  groups <- groups-1 
+  data <- as.matrix(data) -1 
+  groups <- as.vector(groups)-1 
   lik <- posteriorLikelihood(data,groups,pi,beta)
-  print(lik)
   J <- length(beta)
   K <- dim(pi)[2]
   G <- dim(pi)[1]
@@ -42,6 +42,27 @@ checkIdCondition<- function(G,Lj) {
   print(paste("max K is ",floor(condition),sep="")) 
 }
 
+#' Check for which responses and questions the grouped response matrix is sparse 
+#'
+#' @param aux.data 
+#' @param limit 
+#'
+#' @return prints which responses are spares 
+#' @export
+checkSparsity<- function(aux.data,limit=0.05) { 
+  J=ncol(aux.data)
+  N = nrow(aux.data) 
+  L = apply(aux.data,MARGIN=2,FUN=function(x) return(length(unique(x))))
+  for (j in 1:J ) { 
+    question = colnames(aux.data)[j]
+    for (i in 1:L[j]) { 
+      frac = sum(aux.data[,j]==i)/N 
+      if(frac < limit ){
+        print(paste("Small fraction of",frac,"at",question,"response",i,"out of",L[j])) 
+      }
+    }
+  }
+}
 #' Get posterior mean of parameters 
 #'
 #' @param post Posterior sample from running MCMC for LDA-S or LDA-DS 
@@ -60,70 +81,6 @@ posteriorMeans <- function(post) {
   posterior_mean$z_assign <- apply(posterior_mean$z_prob,MARGIN=1,FUN=which.max)
   return(posterior_mean) 
 }
-
-#' Plot time specific class probabilies, possibly vs another time series for LDA-DS
-#'
-#' @param data TxM DataFrame to plot over time 
-#' @param dates T-length vector of dates
-#' @param path location to save plots 
-#' @param save whether or not to save the plot 
-#'
-#' @return Displays plot 
-#' @export
-plotPis <- function(data,dates,path="") { 
-  data$date <- dates 
-  df <- reshape2::melt(df,id.vars=c("date"))
-  ggplot2::ggplot(df,ggplot2::aes(x="date",y="value",color="variable"))+ggplot2::geom_line() 
-  if(save) { 
-    ggplot2::ggsave(paste(path,"pi_comp.pdf",sep="")) 
-  } 
-}
-
-#' Plot class-specific distributions over responses in bar chart 
-#'
-#' @param betas J-length list of K x L_j matrices of class-specific distributions over responses 
-#' @param response_codes Optional J length list, each containing a vector of response codes for each question to plot
-#' @param questions Optional J length vector of question labels to title each graph 
-#' @param path location to save plots 
-#'
-#' @return Saves plots of beta for each question to path 
-#' @export 
-plotBetas <- function(betas,response_codes=NULL,questions=NULL,path="") { 
-  J = length(betas)
-  K = nrow(betas[[1]])
-  for (j in 1:J) { 
-    beta_mat = t(betas[[j]]) 
-    L_j = nrow(beta_mat)
-    beta_df = data.frame(beta_mat)
-    colnames(beta_df) = paste("K",1:K,sep="") 
-    if(!is.null(response_codes)) { 
-      x = response_codes[[j]]
-    }
-    else { 
-      if(L_j==2) { 
-        x = 0:1
-      }
-      else{ 
-        x= 1:L_j 
-      }
-    }
-    if(!is.null(questions)) { 
-      title = questions[j] 
-    }
-    else{
-      title=""
-    }
-    beta_df$response = factor(x)
-    data_long = reshape2::melt(beta_df,id.vars=c("response"))
-    colnames(data_long) = c("Response","Class","Probability")
-    filename  = paste("beta",j,sep="") 
-    filename = paste(title,".pdf",sep="")
-    ggplot2::ggplot(data_long,ggplot2::aes(x="Response",y="Probability",fill="Class")) + 
-      ggplot2::geom_bar(stat='identity', position='dodge')+ggplot2::ggtitle(title)
-    ggplot2::ggsave(filename) 
-  }
-}
-
 
 posteriorMean <- function(estimate,out) { 
   return(apply(estimate[,,out],MARGIN=c(1,2),FUN=mean))

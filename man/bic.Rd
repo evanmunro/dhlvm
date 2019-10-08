@@ -11,11 +11,11 @@ bic(data, groups, pi, beta, dynamic = F)
 
 \item{groups}{N length vector of group membership indicators in 1,..,G}
 
-\item{pi}{G x K matrix of group-specific distributions over classes}
+\item{pi}{G x K matrix of group-specific distributions over classes, usually posterior mean}
 
-\item{beta}{J-length list of K x L_j class-specific response distributions}
+\item{beta}{J-length list of K x L_j class-specific response distributions, usually posterior mean}
 
-\item{dynamic}{Is this a DHLC model?}
+\item{dynamic}{Adjusts number of parameters if this is a DHLC model}
 }
 \value{
 BIC value for model with provided data and parameters

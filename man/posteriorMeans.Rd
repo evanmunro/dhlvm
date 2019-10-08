@@ -7,10 +7,10 @@
 posteriorMeans(post)
 }
 \arguments{
-\item{post}{PosteriorSamples object from running MCMC for LDA-S or LDA-DS}
+\item{post}{Posterior sample from running MCMC for LDA-S or LDA-DS}
 }
 \value{
-PosteriorMean object with attributes for each parameter in the model
+List with attribute containing posterior mean for each parameter in the model
 }
 \description{
 Get posterior mean of parameters

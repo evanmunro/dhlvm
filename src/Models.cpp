@@ -65,15 +65,19 @@ NumericVector sampleZ(NumericMatrix data, NumericVector groups,NumericMatrix pi,
     NumericVector pi_c = pi(groups[i],_); 
     for (int k =0; k < K; k++) { 
       double prob_k = log(pi_c[k]); 
+      //double prob_k = pi_c[k]; 
       for (int j=0; j<J; j++) { 
         NumericMatrix beta_j = as<NumericMatrix>(beta[j]);
-        prob_k += log(beta_j(k,X_i[j])); 
+          prob_k += log(beta_j(k,X_i[j])); 
+          //prob_k = prob_k*beta_j(k,X_i[j]); 
       }
       prob[k] = exp(prob_k); 
+      //prob[k] = prob_k; 
     }
     prob = prob/sum(prob); 
     z[i] = sample(util::vectorRange(K),1,true,prob)[0];  
   }
+  
   return z; 
 } 
 

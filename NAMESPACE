@@ -2,10 +2,10 @@
 
 export(bic)
 export(checkIdCondition)
+export(checkSparsity)
+export(clean_data)
 export(dhlcModel)
 export(hlcModel)
-export(plotBetas)
-export(plotPisComp)
 export(posteriorMeans)
 export(xtoAdjacency)
 importFrom(Rcpp,sourceCpp)
