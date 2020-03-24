@@ -251,6 +251,7 @@ List dhlc_cpp(NumericMatrix data,NumericVector groups, List eta,
   posteriors["sigma"] = sigmaDraw.getVector(); 
   posteriors["pi"] = piDraw.getVector(); 
   posteriors["beta"] = betaDraw; 
+  posteriors["gamma"] = gammaDraw.getVector(); 
   //posteriors["likelihood"] = likelihood; 
   return posteriors; 
 }

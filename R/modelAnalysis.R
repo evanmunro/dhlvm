@@ -1,4 +1,19 @@
 
+#' Calculate likelihood for a single group of responses 
+#' @param data N xJ response matrix 
+#' @param pi 1x K vector of group-specific distribtion over classes
+#' @param beta J-length list of K x L_j class specific response distributions 
+#' 
+#' @return Model ikelihood for provided group of data conditional on provided parameters
+#' @export 
+likelihood <- function(data,groups,pi,beta,select=NULL) { 
+  if (!is.null(select)) {
+    return(posteriorLikelihood(as.matrix(data[groups==select,])-1,as.vector(groups[groups==select])-1,pi,beta))
+  } else {
+    return(posteriorLikelihood(data-1,groups-1,pi,beta)) 
+  }
+}
+
 #' Calculate approximate BIC for the model 
 #'
 #' @param data N x J response matrix  
@@ -13,6 +28,7 @@ bic <- function(data,groups,pi,beta,dynamic=F) {
   data <- as.matrix(data) -1 
   groups <- as.vector(groups)-1 
   lik <- posteriorLikelihood(data,groups,pi,beta)
+  print(lik)
   J <- length(beta)
   K <- dim(pi)[2]
   G <- dim(pi)[1]
@@ -73,6 +89,9 @@ posteriorMeans <- function(post) {
   posterior_mean <- list() 
   if (!is.null(post$sigma)){ 
    posterior_mean$sigma <- posteriorMean(post$sigma,post$out) 
+  }
+  if(!is.null(post$gamma)){
+    posterior_mean$gamma <- posteriorMean(post$gamma,post$out)
   }
   posterior_mean$beta <- posteriorMeanForBeta(post$beta,post$out)
   posterior_mean$pi <- posteriorMean(post$pi,post$out)
