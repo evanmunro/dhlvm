@@ -5,8 +5,16 @@ posteriorLikelihood <- function(data, groups, pi, beta) {
     .Call(`_dhlvm_posteriorLikelihood`, data, groups, pi, beta)
 }
 
+hlc_cpp_noZ <- function(data, groups, eta, alpha, steps) {
+    .Call(`_dhlvm_hlc_cpp_noZ`, data, groups, eta, alpha, steps)
+}
+
 hlc_cpp <- function(data, groups, eta, alpha, steps) {
     .Call(`_dhlvm_hlc_cpp`, data, groups, eta, alpha, steps)
+}
+
+dhlc_cpp_noZ <- function(data, groups, eta, v0, s0, tune, K, T, steps) {
+    .Call(`_dhlvm_dhlc_cpp_noZ`, data, groups, eta, v0, s0, tune, K, T, steps)
 }
 
 dhlc_cpp <- function(data, groups, eta, v0, s0, tune, K, T, steps) {

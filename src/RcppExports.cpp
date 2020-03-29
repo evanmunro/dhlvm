@@ -19,6 +19,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hlc_cpp_noZ
+List hlc_cpp_noZ(NumericMatrix data, NumericVector groups, List eta, NumericMatrix alpha, int steps);
+RcppExport SEXP _dhlvm_hlc_cpp_noZ(SEXP dataSEXP, SEXP groupsSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< List >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(hlc_cpp_noZ(data, groups, eta, alpha, steps));
+    return rcpp_result_gen;
+END_RCPP
+}
 // hlc_cpp
 List hlc_cpp(NumericMatrix data, NumericVector groups, List eta, NumericMatrix alpha, int steps);
 RcppExport SEXP _dhlvm_hlc_cpp(SEXP dataSEXP, SEXP groupsSEXP, SEXP etaSEXP, SEXP alphaSEXP, SEXP stepsSEXP) {
@@ -31,6 +46,25 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
     rcpp_result_gen = Rcpp::wrap(hlc_cpp(data, groups, eta, alpha, steps));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dhlc_cpp_noZ
+List dhlc_cpp_noZ(NumericMatrix data, NumericVector groups, List eta, int v0, int s0, double tune, int K, int T, int steps);
+RcppExport SEXP _dhlvm_dhlc_cpp_noZ(SEXP dataSEXP, SEXP groupsSEXP, SEXP etaSEXP, SEXP v0SEXP, SEXP s0SEXP, SEXP tuneSEXP, SEXP KSEXP, SEXP TSEXP, SEXP stepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< List >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< int >::type v0(v0SEXP);
+    Rcpp::traits::input_parameter< int >::type s0(s0SEXP);
+    Rcpp::traits::input_parameter< double >::type tune(tuneSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< int >::type T(TSEXP);
+    Rcpp::traits::input_parameter< int >::type steps(stepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(dhlc_cpp_noZ(data, groups, eta, v0, s0, tune, K, T, steps));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -141,7 +175,9 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_dhlvm_posteriorLikelihood", (DL_FUNC) &_dhlvm_posteriorLikelihood, 4},
+    {"_dhlvm_hlc_cpp_noZ", (DL_FUNC) &_dhlvm_hlc_cpp_noZ, 5},
     {"_dhlvm_hlc_cpp", (DL_FUNC) &_dhlvm_hlc_cpp, 5},
+    {"_dhlvm_dhlc_cpp_noZ", (DL_FUNC) &_dhlvm_dhlc_cpp_noZ, 9},
     {"_dhlvm_dhlc_cpp", (DL_FUNC) &_dhlvm_dhlc_cpp, 9},
     {"_dhlvm_sampleZ_old", (DL_FUNC) &_dhlvm_sampleZ_old, 3},
     {"_dhlvm_sampleGamma_old", (DL_FUNC) &_dhlvm_sampleGamma_old, 4},

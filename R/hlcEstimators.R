@@ -65,14 +65,19 @@ discreteMSM <- function(data,eta,alpha,K,steps,burn,skip) {
 #' @param steps Number of MCMC steps 
 #' @param burn Burn-in iterations for sampler
 #' @param skip Thinning iterations for sampler 
-#'
+#' @param saveZ If True, then save class labels for each individual at each iteration. Saves memory if set to F. 
+#' 
 #' @return List of full posterior sample for each parameter in the model 
 #' @export
-dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip) { 
+dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip,saveZ = T) { 
   X = X - 1 
   groups = groups-1 
   G = length(unique(groups)) 
-  posterior <- dhlc_cpp(as.matrix(X),as.vector(groups),eta,v0,s0,tune,K,G,steps)
+  if(saveZ) {
+    posterior <- dhlc_cpp(as.matrix(X),as.vector(groups),eta,v0,s0,tune,K,G,steps)
+  } else {
+    posterior <- dhlc_cpp_noZ(as.matrix(X),as.vector(groups),eta,v0,s0,tune,K,G,steps)
+  }
   out <- seq(from=burn,to=steps,by=skip)
   posterior$out = out 
   return(posterior)
@@ -87,13 +92,18 @@ dhlcModel <- function(X,groups,eta,v0,s0,tune,K,steps,burn,skip) {
 #' @param steps Number of MCMC steps 
 #' @param burn Burn-in iterations for sampler
 #' @param skip Thinning iterations for sampler
-#'
+#' @param saveZ If True, then save class labels for each individual at each iteration. Saves memory if set to F. 
+#' 
 #' @return List of full posterior sample for each parameter in the model 
 #' @export
-hlcModel <- function(X,groups,eta,alpha,steps,burn,skip) { 
+hlcModel <- function(X,groups,eta,alpha,steps,burn,skip,saveZ=T) { 
   X = X - 1 
   groups = groups-1 
-  posterior <- hlc_cpp(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
+  if(saveZ) {
+    posterior <- hlc_cpp(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
+  } else {
+    posterior <- hlc_cpp_noZ(as.matrix(X),as.vector(groups),eta,as.matrix(alpha),steps)
+  }
   out <- seq(from=burn,to=steps,by=skip)
   posterior$out = out 
   return(posterior)

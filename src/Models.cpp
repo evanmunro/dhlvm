@@ -98,6 +98,41 @@ NumericMatrix samplePi(NumericVector groups,NumericVector z,NumericMatrix alpha)
 }
 
 
+// [[Rcpp::export]]
+List hlc_cpp_noZ(NumericMatrix data,NumericVector groups, List eta,
+             NumericMatrix alpha, int steps) {
+  
+  int K = alpha.ncol(); 
+  int C = alpha.nrow(); 
+  int N = data.nrow(); 
+  int J = data.ncol(); 
+  Array3d pi_samp = Array3d(C,K,steps); 
+  NumericVector z_samp = NumericVector(N);  
+  List beta_samp(steps); 
+  //NumericVector likelihood = NumericVector(steps); 
+  
+  //initialize each of the parameter samples based on draws from prior
+  List initBeta(J); 
+  NumericMatrix initPi(C,K); 
+  
+  for (int j=0; j< J ; j++) { 
+    NumericMatrix eta_j = as<NumericMatrix>(eta[j]); 
+    initBeta[j] = util::initializeMultinomial(eta_j); 
+  }
+  beta_samp[0] = initBeta; 
+  pi_samp.setMatrix(0,util::initializeMultinomial(alpha));
+  // run gibbs sampler
+  for (int s=1; s< steps; s++) {
+    z_samp = sampleZ(data,groups,pi_samp.getMatrix(s-1),beta_samp[s-1]); 
+    pi_samp.setMatrix(s,samplePi(groups,z_samp,alpha));
+    beta_samp[s] = sampleBeta(data,z_samp,eta); 
+  }
+  List posteriors; 
+  posteriors["Z"] = z_samp; 
+  posteriors["pi"] = pi_samp.getVector(); 
+  posteriors["beta"] = beta_samp; 
+  return posteriors; 
+}
 
 // [[Rcpp::export]]
 List hlc_cpp(NumericMatrix data,NumericVector groups, List eta,
@@ -192,6 +227,68 @@ NumericMatrix sampleGamma(NumericVector groups, NumericVector z,
     }
   }
   return gammaNew; 
+}
+
+// [[Rcpp::export]]
+List dhlc_cpp_noZ(NumericMatrix data,NumericVector groups, List eta,
+              int v0, int s0,double tune, int K, int T, int steps) {
+  
+  int N = data.nrow(); 
+  int J = data.ncol(); 
+  Array3d gammaDraw = Array3d(T,K,steps); 
+  Array3d piDraw = Array3d(T,K,steps); 
+  Array3d sigmaDraw = Array3d(K,K,steps); 
+  NumericVector zDraw = NumericVector(N);  
+  //NumericVector likelihood = NumericVector(steps); 
+  List betaDraw(steps); 
+  
+  //initialize each of the parameter samples based on draws from prior
+  List initBeta(J); 
+  NumericMatrix initPi(T,K); 
+  NumericMatrix initSigma(K,K); 
+  NumericMatrix initGamma(T,K); 
+  for (int k=0; k< K; k++ ) { 
+    initSigma(k,k) = sqrt((1/rgamma(1,v0,1/s0))[0]);  
+    initGamma(0,k) = rnorm(1,0,initSigma(k,k))[0]; 
+    for (int t=1; t<T; t++) { 
+      initGamma(t,k) = rnorm(1,initGamma(t-1,k),initSigma(k,k))[0]; 
+    }
+  }
+  
+  for (int t=0; t<T; t++) { 
+    initPi(t,_) = util::softmax(initGamma(t,_)); 
+  }
+  
+  for (int j=0; j< J ; j++) { 
+    NumericMatrix eta_j = as<NumericMatrix>(eta[j]); 
+    initBeta[j] = util::initializeMultinomial(eta_j); 
+  }
+  betaDraw[0] = initBeta; 
+  gammaDraw.setMatrix(0,initGamma); 
+  piDraw.setMatrix(0,initPi); 
+  sigmaDraw.setMatrix(0,initSigma);  
+  
+  // run gibbs sampler
+  for (int s=1; s< steps; s++) {
+    double shrink = tune*pow(1+s,-0.5);
+    zDraw = sampleZ(data,groups,piDraw.getMatrix(s-1),betaDraw[s-1]); 
+    gammaDraw.setMatrix(s,sampleGamma(groups,zDraw ,gammaDraw.getMatrix(s-1), 
+                                      sigmaDraw.getMatrix(s-1),shrink)); 
+    piDraw.setMatrix(s,util::softmax(gammaDraw.getMatrix(s))); 
+    sigmaDraw.setMatrix(s,sampleSigma(gammaDraw.getMatrix(s),v0,s0)); 
+    betaDraw[s] = sampleBeta(data,zDraw,eta); 
+    //likelihood[s]= posteriorLikelihood(data,zDraw(_,s),betaDraw[s]); 
+    //likelihood[s]= posteriorLikelihood(data,groups,piDraw.getMatrix(s),betaDraw[s]); 
+  }
+  
+  List posteriors; 
+  posteriors["Z"] = zDraw; 
+  posteriors["sigma"] = sigmaDraw.getVector(); 
+  posteriors["pi"] = piDraw.getVector(); 
+  posteriors["beta"] = betaDraw; 
+  posteriors["gamma"] = gammaDraw.getVector(); 
+  //posteriors["likelihood"] = likelihood; 
+  return posteriors; 
 }
 
 // [[Rcpp::export]]
