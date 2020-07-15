@@ -1,4 +1,4 @@
-### Estimation and Analysis of LDA-S and LDA-DS Models for Categorical Survey Data
+### Estimation and Analysis of LDA-E and LDA-DE Models for Categorical Survey Data
 
 The package contains code to estimate and analyze LDA-E and LDA-DE models, which are bayesian hierarchical latent variable models for analyzing categorical survey data. 
 
