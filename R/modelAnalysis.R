@@ -28,7 +28,7 @@ bic <- function(data,groups,pi,beta,dynamic=F) {
   data <- as.matrix(data) -1 
   groups <- as.vector(groups)-1 
   lik <- posteriorLikelihood(data,groups,pi,beta)
-  print(lik)
+  print(paste0("likelihood: ", lik))
   J <- length(beta)
   K <- dim(pi)[2]
   G <- dim(pi)[1]
